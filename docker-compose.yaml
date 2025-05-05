@@ -1,0 +1,64 @@
+﻿services:
+#  webapplication1:
+#    image: webapplication1
+#    build:
+#      context: .
+#      dockerfile: WebApplication1/Dockerfile
+  postgres:
+    image: postgres:latest
+    container_name: Postgres_container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 09122002
+      POSTGRES_DB: HealthData
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    volumes:
+        - ./Repository/data_log/postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    ports:
+      - "5432:5432"
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    container_name: redis_container
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    volumes:
+      - ./Repository/data_base_log/redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+  Mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    container_name: Mongodb_container
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    volumes:
+        - ./Repository/data_base_log/mongo_data:/data/db
+    healthcheck:
+        test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+        interval: 30s
+        timeout: 10s
+        retries: 3
+        start_period: 10s
