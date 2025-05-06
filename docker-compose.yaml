@@ -1,9 +1,10 @@
 ﻿services:
-#  webapplication1:
-#    image: webapplication1
-#    build:
-#      context: .
-#      dockerfile: WebApplication1/Dockerfile
+  webapplication1:
+    image: webapplication1
+    container_name: HealthWebApp_container
+    build:
+      context: .
+      dockerfile: WebApplication1/Dockerfile
   postgres:
     image: postgres:latest
     container_name: Postgres_container
