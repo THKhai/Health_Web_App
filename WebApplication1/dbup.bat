@@ -96,6 +96,7 @@ if %errorlevel% neq 0 (
 )
 for %%f in (.\Repository\Migration_scripts\postgres\*.sql) do (
     echo Executing %%~nxf...
+    @echo off
     docker exec -i Postgres_container psql -U postgres -f /migrations/%%~nxf
     if !errorlevel! neq 0 (
         echo [ERR]: Failed executing %%~nxf in PostgreSQL
