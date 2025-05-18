@@ -5,12 +5,19 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Npgsql.Replication.PgOutput.Messages;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using WebApplication1.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // retrive the jwt information from the appsettings.json file
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
+builder.Services
+    .AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<AuthContext>()
+    .AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>("User")
+    .AddDefaultTokenProviders();
 
 // Configure Authentication with jwt
 builder.Services.AddAuthentication(option =>
@@ -25,9 +32,9 @@ builder.Services.AddAuthentication(option =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(key)
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
 
