@@ -25,7 +25,7 @@ for /L %%i in (1,1,%MAX_ATTEMPTS%) do (
      )
         
     REM Check Postgres
-    docker exec -i Postgres_container pg_isready >nul 2>&1
+    docker exec -i Postgres_container psql -U postgres -c "SELECT 1" >nul 2>&1
     if !errorlevel! neq 0 (
         echo [STATUS]: Waiting for PostgreSQL...
         set "all_ready=false"
@@ -87,7 +87,6 @@ for %%f in (.\Repository\Migration_scripts\mongoDB\*.js) do (
 )
 echo [STATUS]: MongoDB migration completed.
 
-sleep 20
 echo [STEP]: Migrating PostgreSQL...
 docker cp ".\Repository\Migration_scripts\postgres" Postgres_container:/migrations/
 if %errorlevel% neq 0 (
@@ -97,7 +96,7 @@ if %errorlevel% neq 0 (
 for %%f in (.\Repository\Migration_scripts\postgres\*.sql) do (
     echo Executing %%~nxf...
     @echo off
-    docker exec -i Postgres_container psql -U postgres -f /migrations/%%~nxf
+    docker exec -i Postgres_container psql -U postgres -d HealthData -f /migrations/%%~nxf
     if !errorlevel! neq 0 (
         echo [ERR]: Failed executing %%~nxf in PostgreSQL
     )
