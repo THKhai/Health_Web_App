@@ -25,7 +25,7 @@ for /L %%i in (1,1,%MAX_ATTEMPTS%) do (
      )
         
     REM Check Postgres
-    docker exec -i Postgres_container psql -U postgres -c "SELECT 1" >nul 2>&1
+    docker exec -i Postgres_container psql -U postgres -d HealthData -c "SELECT 1" >nul 2>&1
     if !errorlevel! neq 0 (
         echo [STATUS]: Waiting for PostgreSQL...
         set "all_ready=false"

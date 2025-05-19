@@ -21,11 +21,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Data\" />
       <Folder Include="Helpers\" />
       <Folder Include="Mapping\" />
       <Folder Include="Middlewares\" />
-      <Folder Include="Services\" />
     </ItemGroup>
 
 </Project>
