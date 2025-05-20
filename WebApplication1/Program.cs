@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Npgsql.Replication.PgOutput.Messages;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
+using WebApplication1.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,12 @@ var builder = WebApplication.CreateBuilder(args);
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
+// Connect to PostgreSQL database
+builder.Services.AddDbContext<AuthContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Configure the JWT token service
+builder.Services.AddScoped<ITokenRepository, JWTRepository>();
 // Add services to the container.
 builder.Services
     .AddIdentity<IdentityUser, IdentityRole>()
@@ -51,19 +59,12 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.GetHashCode();
 });
 
+
 // Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 
