@@ -58,7 +58,7 @@ public class AuthController : Controller
     {
         try
         {
-            var user = await _userManager.FindByEmailAsync(loginRequest.Username);
+            var user = await _userManager.FindByEmailAsync(loginRequest.Email);
             if (user != null)
             {
                 var passwordCheck = await _userManager.CheckPasswordAsync(user, loginRequest.Password);
