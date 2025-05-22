@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Npgsql.Replication.PgOutput.Messages;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Data;
+using WebApplication1.Models;
 using WebApplication1.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +52,7 @@ builder.Services.AddAuthentication(option =>
 //Cấu hình yêu cầu mật khẩu cho tài khoản trong hệ thống
 builder.Services.Configure<IdentityOptions>(options =>
 {
+    options.User.RequireUniqueEmail = true; 
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
     options.Password.RequireUppercase = false;
@@ -62,6 +65,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.Configure<MongoDBSetting>(
+    builder.Configuration.GetSection("HealthDatabase"));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();

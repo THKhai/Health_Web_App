@@ -4,10 +4,10 @@ db.createUser({
     roles:[
         {
             role:"readWrite",
-            db:"Health_Wap_Application"
+            db:"HealthWebApplication"
         }
     ]
 })
 
-use("Health_Wap_Application");
-db.createCollection("example");
+use("HealthWebApplication");
+db.createCollection("Users");
